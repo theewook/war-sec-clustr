@@ -57,14 +57,14 @@ Jetty Plugin
 
 For simple development testing with `mvn jetty:run`
 
-        <plugins>
-            <!-- mvn jetty:run http://localhost:8080/spring-sec -->
-            <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
-                <version>6.1.26</version>
-            </plugin>
-        </plugins>
+    <plugins>
+        <!-- mvn jetty:run http://localhost:8080/spring-sec -->
+        <plugin>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>maven-jetty-plugin</artifactId>
+            <version>6.1.26</version>
+        </plugin>
+    </plugins>
 
 WebLogic deployment
 -------------------
