@@ -57,6 +57,7 @@ Jetty Plugin
 
 For simple development testing with `mvn jetty:run`
 
+```
     <plugins>
         <!-- mvn jetty:run http://localhost:8080/spring-sec -->
         <plugin>
@@ -65,6 +66,7 @@ For simple development testing with `mvn jetty:run`
             <version>6.1.26</version>
         </plugin>
     </plugins>
+```
 
 WebLogic deployment
 -------------------
