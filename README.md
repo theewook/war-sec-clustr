@@ -126,7 +126,7 @@ Spring Security filter stack using the magic bean/filter name of `springSecurity
 The Spring Context
 ------------------
 
-The Spring Context, in `applicationContext.xml` defines the Spring Security beans using the Spring Security namespace.  It just uses a simple in-memory `userDetailsService` for password authentication.
+The Spring Context, in `applicationContext.xml` defines the Spring Security beans using the Spring Security namespace.  It just uses a simple in-memory `userDetailsService` for password authentication.  It uses the `auto-config=true` setting that places a Form Login security filter in the stack.  
 
 		<beans:beans xmlns="http://www.springframework.org/schema/security"
 		    xmlns:beans="http://www.springframework.org/schema/beans"
@@ -151,7 +151,7 @@ The Spring Context, in `applicationContext.xml` defines the Spring Security bean
 
 		</beans:beans>
 
-
+The client is redirected to the auto-generated login form when authentication is first declined.
 
 
 
