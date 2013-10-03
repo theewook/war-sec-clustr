@@ -34,12 +34,14 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
+    <!-- We activate the container's web.xml based security by securing everything -->
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Everything</web-resource-name>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
+            <!-- Everyone needs at least this role -->
             <role-name>ROLE_USER</role-name>
         </auth-constraint>
     </security-constraint>
@@ -54,6 +56,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
         </form-login-config>
     </login-config>
 
+    <!-- These roles will be available through the container, possibly indirectly, via a name mapping -->
     <security-role>
         <role-name>ROLE_USER</role-name>
     </security-role>

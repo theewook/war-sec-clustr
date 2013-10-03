@@ -1,0 +1,15 @@
+<glassfish-web-app>
+
+    <!--
+      Map security roles from web.xml to GlassFish group names
+    -->
+    <security-role-mapping>
+        <role-name>ROLE_USER</role-name>
+        <group-name>ROLE_USER</group-name>
+    </security-role-mapping>
+    <security-role-mapping>
+        <role-name>ROLE_ADMIN</role-name>
+        <group-name>ROLE_ADMIN</group-name>
+    </security-role-mapping>
+
+</glassfish-web-app>

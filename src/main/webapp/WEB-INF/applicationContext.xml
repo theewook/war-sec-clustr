@@ -16,8 +16,8 @@
         <session-management session-fixation-protection="none"/>
     </http>
 
-    <!-- In the Pre-auth case, this isn't really the entry point normally, but it will be invoked if some other Spring
-      Security filter throws an un-authorised exception  -->
+    <!-- In the Pre-auth case, this isn't really the entry point - the container handles that. -->
+    <!-- However, it may be invoked if some SpringSecurity filter, deeper down, throws an un-authorised exception  -->
     <beans:bean id="authenticationEntryPoint"
         class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
 
@@ -26,7 +26,7 @@
         class="org.springframework.security.web.authentication.preauth.j2ee.WebXmlMappableAttributesRetriever"/>
 
     <!-- Maps the web.xml roles into Spring Security's GrantedAuthorities -->
-    <beans:bean id="roles2AuthoritiesMapper"
+    <beans:bean id="roles2GrantedAuthoritiesMapper"
         class="org.springframework.security.core.authority.mapping.SimpleAttributes2GrantedAuthoritiesMapper">
         <beans:property name="attributePrefix" value=""/>
     </beans:bean>
@@ -35,7 +35,7 @@
     <beans:bean id="authDetailsSource"
         class="org.springframework.security.web.authentication.preauth.j2ee.J2eeBasedPreAuthenticatedWebAuthenticationDetailsSource">
         <beans:property name="mappableRolesRetriever" ref="webXmlRolesParser"/>
-        <beans:property name="userRoles2GrantedAuthoritiesMapper" ref="roles2AuthoritiesMapper"/>
+        <beans:property name="userRoles2GrantedAuthoritiesMapper" ref="roles2GrantedAuthoritiesMapper"/>
     </beans:bean>
 
     <!-- Builds a UserDetails object from the authenticated Principal and GrantedAuthorities -->
@@ -47,7 +47,7 @@
         <beans:property name="preAuthenticatedUserDetailsService" ref="userDetailsService"/>
     </beans:bean>
 
-    <!-- The AuthenticationManager sees if any of its Providers can return a fully populated Authentication -->
+    <!-- The AuthenticationManager checks if any of its Providers can return a fully populated Authentication -->
     <authentication-manager alias="authenticationManager">
         <!-- List of available providers -->
         <authentication-provider ref="preAuthAuthenticationProvider"/>

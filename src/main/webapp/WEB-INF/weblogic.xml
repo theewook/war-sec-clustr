@@ -10,6 +10,8 @@
     <container-descriptor>
         <prefer-web-inf-classes>true</prefer-web-inf-classes>
     </container-descriptor>
+
+    <!-- Map web.xml roles (role-name) to WebLogic roles/groups (principal-name)-->
     <security-role-assignment>
         <role-name>ROLE_USER</role-name>
         <principal-name>ROLE_USER</principal-name>
