@@ -7,17 +7,50 @@
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-    <http auto-config="true">
+    <http create-session="never" use-expressions="false" auto-config="false"
+        entry-point-ref="preAuthenticatedProcessingFilterEntryPoint">
+        <intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/**" access="ROLE_USER" />
+        <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilter"/>
+        <!-- Required for Tomcat, will prompt for username / password twice otherwise -->
+        <session-management session-fixation-protection="none"/>
     </http>
 
-    <user-service id="userDetailsService">
-        <user name="admin" password="password" authorities="ROLE_USER, ROLE_ADMIN" />
-        <user name="user" password="password" authorities="ROLE_USER" />
-    </user-service>
+    <beans:bean id="preAuthenticatedProcessingFilterEntryPoint"
+        class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
+
+    <beans:bean id="webXmlMappableAttributesRetriever"
+        class="org.springframework.security.web.authentication.preauth.j2ee.WebXmlMappableAttributesRetriever"/>
+
+    <beans:bean id="simpleAttributes2GrantedAuthoritiesMapper"
+        class="org.springframework.security.core.authority.mapping.SimpleAttributes2GrantedAuthoritiesMapper">
+        <beans:property name="attributePrefix" value=""/>
+    </beans:bean>
+
+    <beans:bean id="j2eeBasedPreAuthenticatedWebAuthenticationDetailsSource"
+        class="org.springframework.security.web.authentication.preauth.j2ee.J2eeBasedPreAuthenticatedWebAuthenticationDetailsSource">
+        <beans:property name="mappableRolesRetriever" ref="webXmlMappableAttributesRetriever"/>
+        <beans:property name="userRoles2GrantedAuthoritiesMapper" ref="simpleAttributes2GrantedAuthoritiesMapper"/>
+    </beans:bean>
+
+    <beans:bean id="preAuthUserDetailsService"
+        class="uk.co.b2esoftware.PreAuthUserDetailsService"/>
+
+    <beans:bean id="authenticationProvider"
+        class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        <beans:property name="preAuthenticatedUserDetailsService" ref="preAuthUserDetailsService"/>
+    </beans:bean>
 
     <authentication-manager alias="authenticationManager">
-        <authentication-provider user-service-ref="userDetailsService"/>
+        <authentication-provider ref="authenticationProvider"/>
     </authentication-manager>
+
+    <!-- This defines the filter that kicks off the pre-auth "Authentication" process -->
+    <beans:bean id="preAuthFilter"
+        class="org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter">
+        <beans:property name="authenticationManager" ref="authenticationManager"/>
+        <beans:property name="authenticationDetailsSource"
+            ref="j2eeBasedPreAuthenticatedWebAuthenticationDetailsSource"/>
+    </beans:bean>
 
 </beans:beans>

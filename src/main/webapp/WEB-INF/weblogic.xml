@@ -10,6 +10,15 @@
     <container-descriptor>
         <prefer-web-inf-classes>true</prefer-web-inf-classes>
     </container-descriptor>
+    <security-role-assignment>
+        <role-name>ROLE_USER</role-name>
+        <principal-name>ROLE_USER</principal-name>
+    </security-role-assignment>
+    <security-role-assignment>
+        <role-name>ROLE_ADMIN</role-name>
+        <principal-name>ROLE_ADMIN</principal-name>
+    </security-role-assignment>
+
     <!-- Make WebLogic use a different session ID cookie name and path for this web application -->
     <!-- Note, if this isn't done, bear in mind that the WebLogic console AND your app both use JSESSIONID by default -->
     <!-- This causes confusion if debugging your app in a tab of the same browser as the WebLogic console -->

@@ -1,7 +1,124 @@
 war-sec
 =======
 
-Sample WAR with Spring Security.
+This is a sample WAR which uses Spring Security for role-based access control, but uses the JEE container to perform
+J2EE "FORM-based" login authentication.
+
+To run under Jetty:
+
+    mvn jetty:run
+
+Jetty is configured through the maven plugin in the `pom.xml` file and defines a security realm using the file
+`realm.properties`.
+
+To run under WebLogic:
+
+The build includes a shim descriptor `weblogic.xml` for deployment into WebLogic.  The principal names `ROLE_USER`
+and `ROLE_ADMIN` in `weblogic.xml` need to be defined in the WebLogic security realm and associated with appropriate
+users.
+
+In putting this sample together, I referred to the Spring and Spring Security docs, and also
+[this](https://github.com/skrall/spring-security-j2ee-preauth-example) handy example I found from
+Steve Krall on github.
+
+Rationale
+---------
+
+The purpose of this sample is to show the use of Spring Security in a JEE web app that uses the servlet container to
+perform authentication.  Spring Security calls this pre-authentication.
+
+This is a common customer use case.  Many customers have operational departments that deploy
+and monitor supplier software in application server consoles like those of WebLogic and WebSphere (no, really!).  Their
+expectation is that they should be able to set up users and groups/roles in the app server in the same way that they
+have for all their other apps - the app server's *security realm* is probably hooked into a shared instance of an LDAP server
+or Active Directory, or whatever, that is shared across the organisation.
+
+It's been around for ages; J2EE (or should we by now really be saying JEE?) FORM login.  It allows the container to
+intercept and authenticate the user's credentials, using the app-supplied login form.  This is achieved with the
+following familiar blocks in the `web.xml` file.
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/login_error.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
+This one tells the container that the `FORM` scheme is being used and into which URL the user's will be sticking their
+username and password.  The supplied login form HTML just has to follow the following contract to work.
+
+    <form method=post action="j_security_check">
+        <input type="text" name= "j_username">
+        <input type="password" name= "j_password">
+    </form>
+
+The POST request can then be intercepted by the container, who validates the credentials against their preferred
+authentication engine.  In addition, as app suppliers, we often define some security roles in the `web.xml` whose
+names are meaningful to the app.
+
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+    <security-role>
+        <role-name>operator</role-name>
+    </security-role>
+    <security-role>
+        <role-name>administrator</role-name>
+    </security-role>
+
+Our intention is that when some user logs in, we want to know what roles they have.  E.g., they have to be in
+the `user` role to see anything at all; if they are in the `operator` role they can see *these* pages, and if they are
+in the `administrator` role they can also see *those* pages and so on and so forth.
+
+The container's security realm associates users with roles (or groups), but the names may be different.  E.g., a
+customer may have a WebLogic installation with an LDAP-backed security realm.  This realm may already have users with
+'roles' such as `normal_users`, `operator_users` and `admin_users` to their names.  Without changing the setup of
+their LDAP server, they would like the two concepts mapped.  This is often done using a *shim* descriptor file such
+as `weblogic.xml` for WebLogic.
+
+    [weblogic.xml]
+    ...
+    <security-role-assignment>
+        <role-name>user</role-name>                    << name in web.xml
+        <principal-name>normal_users</principal-name>  << name in container's security realm
+    </security-role-assignment>
+    <security-role-assignment>
+        <role-name>operator</role-name>
+        <principal-name>operator_users</principal-name>
+    </security-role-assignment>
+    <security-role-assignment>
+        <role-name>admin</role-name>
+        <principal-name>admin_users</principal-name>
+    </security-role-assignment>
+
+Although having such a file distributed with your app is not exactly the most flexible solution, since the customer is
+unlikely to want to unzip your WAR and edit it, it illustrates the point.  In reality, app servers like WebLogic also
+allow the customer to specify some form of *deployment plan* during installation that can override such default mappings.
+
+
+
+
+
+To a certain extent you can specify such access control using the `security-constraint` element in the `web.xml` but
+it gets increasingly cumbersome, and limiting, the more detailed your requirements are.
+
+Spring Security has a sophisticated approach to access control, based on the authorities of the User Principal.  It is
+this that we want to make use of, whilst honouring the authentication provided by the container.  To this end, it is
+sufficient to simply configure the `security-constraint` in the web.xml to say that the user has to be at least in the
+role of `user`, say, to access anything.
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Everything</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+Then we let Spring Security take over to do the fine-tuned role-based access control.
 
 Versions
 --------
