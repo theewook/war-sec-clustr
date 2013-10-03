@@ -272,6 +272,58 @@ The Spring Context, in `applicationContext.xml` defines the Spring Security bean
 
 The client is redirected to the auto-generated login form when authentication is first declined.
 
+Testing on the command line using cURL
+--------------------------------------
+
+This simple commandline sequence follows the FORM login without having to resort to the browser.
+
+Make a request to the protected resource.
+
+    $ curl -c cookies.txt -vL http://localhost:8080/spring-sec/
+
+* -c stores the cookie information for later use
+* -v verbose output (so you can see the redirect)
+* -L make sure curl follows the redirect
+
+Assuming that you're not already logged in, this will redirect you to the login page.  You should see the HTML of the
+login form coming back in the `curl` command line.  The session ID cookie now will have been written to the file
+cookies.txt.
+
+To now submit the login form with username and password (and session ID cookie):
+
+    $ curl -vL "http://localhost:8080/spring-sec/j_security_check" \
+        -d "j_username=testuser&j_password=passw0rd" -b cookies.txt
+
+* -b specifies the file holding the session ID cookie
+
+You should now see the redirect taking you to the originally requested page (i.e., the welcome page; index.jsp).
+
+Now that you have a session ID cookie in the file cookies.txt, you can continue to make requests, re-sending the
+session ID cookie until the server times out the session.  For example:
+
+    $ curl -v http://localhost:8080/spring-sec/index.jsp -b cookies.txt
+
+Now, we don't see any redirects, because we have supplied a valid session ID cookie directly in the request.  The output
+from curl's verbose mode (-v) will look something like this
+
+
+    > GET /spring-sec/index.jsp HTTP/1.1
+    > User-Agent: curl/7.21.4 (universal-apple-darwin11.0) libcurl/7.21.4 OpenSSL/0.9.8x zlib/1.2.5
+    > Host: localhost:8080
+    > Accept: */*
+    > Cookie: JSESSIONID=kvd6n7k0o7hn1vz12ixzg0ja1
+    >
+
+Finally, to log yourself out, you need to send a request to the /logout URL (which we mapped to the LogoutServlet in
+web.xml).  This servlet tells the container to invalidate the session.
+
+   $ curl -vL http://localhost:8080/spring-sec/logout -b cookies.txt -X POST
+
+Note the URL pattern /logout which invokes the LogoutServlet.  This servlet invalidates the session, causing the logout.
+The servlet's response is a redirect to the context path, which causes a redirect to the welcome page (index.jsp) but
+of course because we are now logged out, this, in turn, causes a redirect back to the login page.
+
+
 
 
 
