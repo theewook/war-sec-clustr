@@ -281,22 +281,29 @@ Make a request to the protected resource.
 
     $ curl -c cookies.txt -vL http://localhost:8080/spring-sec/
 
-* -c stores the cookie information for later use
+* -c stores the cookie information into the file 'cookies.txt' for later use
 * -v verbose output (so you can see the redirect)
-* -L make sure curl follows the redirect
+* -L make sure curl follows any redirects that the server may send
 
-Assuming that you're not already logged in, this will redirect you to the login page.  You should see the HTML of the
-login form coming back in the `curl` command line.  The session ID cookie now will have been written to the file
-cookies.txt.
+Assuming that you're not already logged in, this will land you on the login page.  You should see the HTML of the
+login form coming back in the `curl` command line verbose output.  The session ID cookie now will have been written
+to the file cookies.txt.
 
 To now submit the login form with username and password (and session ID cookie):
 
     $ curl -vL "http://localhost:8080/spring-sec/j_security_check" \
-        -d "j_username=testuser&j_password=passw0rd" -b cookies.txt
+        -d "j_username=testuser&j_password=passw0rd" -b cookies.txt -c cookies.txt
 
-* -b specifies the file holding the session ID cookie
+* -c file to write cookies to (cookie jar)
+* -b file to send cookies from (same as above)
+* -d tells curl to send a POST request with the specified name/value pairs (i.e. username,password)
 
-You should now see the redirect taking you to the originally requested page (i.e., the welcome page; index.jsp).
+You should now see a redirect taking you to the originally requested page (i.e., the welcome page; index.jsp).  Exactly
+what redirects you get, and when, depends a bit on the app server.
+
+The -c option is important this time around because the server *may* (or may not) want to replace the original cookie
+with a new value following the login, so it has to have the cookie file to write to.  Whether or not the cookie is
+replaced depends on the app server and how it's configured.
 
 Now that you have a session ID cookie in the file cookies.txt, you can continue to make requests, re-sending the
 session ID cookie until the server times out the session.  For example:
@@ -320,8 +327,11 @@ web.xml).  This servlet tells the container to invalidate the session.
    $ curl -vL http://localhost:8080/spring-sec/logout -b cookies.txt -X POST
 
 Note the URL pattern /logout which invokes the LogoutServlet.  This servlet invalidates the session, causing the logout.
-The servlet's response is a redirect to the context path, which causes a redirect to the welcome page (index.jsp) but
-of course because we are now logged out, this, in turn, causes a redirect back to the login page.
+The servlet's response is a redirect to the context path, but because we're logged out, we should ultimately be
+redirected back to the login page by whatever route the server sees fit.  The cookie in cookies.txt is now invalid and
+no use to us.
+
+
 
 
 

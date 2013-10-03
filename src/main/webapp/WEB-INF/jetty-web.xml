@@ -1,0 +1,16 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+<Configure class="org.mortbay.jetty.webapp.WebAppContext">
+    <Get name="sessionHandler">
+        <Get name="sessionManager">
+            <!-- Choose a different cookie name to avoid clashes -->
+            <Set name="sessionCookie">SPRINGSECSESSIONID</Set>
+            <!-- Cookie path (session path) is the context path of the app -->
+            <Set name="sessionPath">/spring-sec</Set>
+            <!-- Disable session ID url rewriting -->
+            <Set name="sessionURL">none</Set>
+            <!--<Set name="secureCookies" type="boolean">true</Set>-->
+            <Set name="httpOnly" type="boolean">true</Set>
+        </Get>
+    </Get>
+</Configure>

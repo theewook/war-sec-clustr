@@ -26,8 +26,12 @@
     <!-- This causes confusion if debugging your app in a tab of the same browser as the WebLogic console -->
     <!-- You apparently will be unable to log into your app because the cookie from the console is sent as well -->
     <session-descriptor>
-        <cookie-name>spring-sec-session</cookie-name>
-        <cookie-path>spring-sec</cookie-path>
+        <!-- Choose a different cookie name to avoid clashes -->
+        <cookie-name>SPRINGSECSESSIONID</cookie-name>
+        <!-- Cookie path is the context path of the app -->
+        <cookie-path>/spring-sec</cookie-path>
+        <!-- Disable session ID url rewriting -->
+        <url-rewriting-enabled>false</url-rewriting-enabled>
     </session-descriptor>
 
 </weblogic-web-app>
