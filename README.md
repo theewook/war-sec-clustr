@@ -174,7 +174,7 @@ Jetty Plugin
 
 For simple development testing with `mvn jetty:run`
 
-```
+```xml
     <plugins>
         <!-- mvn jetty:run http://localhost:8080/spring-sec -->
         <plugin>
