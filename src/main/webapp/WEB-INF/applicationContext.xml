@@ -8,7 +8,7 @@
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
     <http create-session="never" use-expressions="false" auto-config="false"
-        entry-point-ref="preAuthenticatedProcessingFilterEntryPoint">
+        entry-point-ref="authenticationEntryPoint">
         <intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <intercept-url pattern="/**" access="ROLE_USER" />
         <custom-filter position="PRE_AUTH_FILTER" ref="preAuthFilter"/>
@@ -16,41 +16,48 @@
         <session-management session-fixation-protection="none"/>
     </http>
 
-    <beans:bean id="preAuthenticatedProcessingFilterEntryPoint"
+    <!-- In the Pre-auth case, this isn't really the entry point normally, but it will be invoked if some other Spring
+      Security filter throws an un-authorised exception  -->
+    <beans:bean id="authenticationEntryPoint"
         class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
 
-    <beans:bean id="webXmlMappableAttributesRetriever"
+    <!-- Pulls the roles out of web.xml -->
+    <beans:bean id="webXmlRolesParser"
         class="org.springframework.security.web.authentication.preauth.j2ee.WebXmlMappableAttributesRetriever"/>
 
-    <beans:bean id="simpleAttributes2GrantedAuthoritiesMapper"
+    <!-- Maps the web.xml roles into Spring Security's GrantedAuthorities -->
+    <beans:bean id="roles2AuthoritiesMapper"
         class="org.springframework.security.core.authority.mapping.SimpleAttributes2GrantedAuthoritiesMapper">
         <beans:property name="attributePrefix" value=""/>
     </beans:bean>
 
-    <beans:bean id="j2eeBasedPreAuthenticatedWebAuthenticationDetailsSource"
+    <!-- Creates the authentication details object (which includes the GrantedAuthorities) -->
+    <beans:bean id="authDetailsSource"
         class="org.springframework.security.web.authentication.preauth.j2ee.J2eeBasedPreAuthenticatedWebAuthenticationDetailsSource">
-        <beans:property name="mappableRolesRetriever" ref="webXmlMappableAttributesRetriever"/>
-        <beans:property name="userRoles2GrantedAuthoritiesMapper" ref="simpleAttributes2GrantedAuthoritiesMapper"/>
+        <beans:property name="mappableRolesRetriever" ref="webXmlRolesParser"/>
+        <beans:property name="userRoles2GrantedAuthoritiesMapper" ref="roles2AuthoritiesMapper"/>
     </beans:bean>
 
-    <beans:bean id="preAuthUserDetailsService"
-        class="uk.co.b2esoftware.PreAuthUserDetailsService"/>
+    <!-- Builds a UserDetails object from the authenticated Principal and GrantedAuthorities -->
+    <beans:bean id="userDetailsService" class="uk.co.b2esoftware.PreAuthUserDetailsService"/>
 
-    <beans:bean id="authenticationProvider"
+    <!-- Calls the UserDetails service and performs minimal checks, before creating a valid Authentication -->
+    <beans:bean id="preAuthAuthenticationProvider"
         class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
-        <beans:property name="preAuthenticatedUserDetailsService" ref="preAuthUserDetailsService"/>
+        <beans:property name="preAuthenticatedUserDetailsService" ref="userDetailsService"/>
     </beans:bean>
 
+    <!-- The AuthenticationManager sees if any of its Providers can return a fully populated Authentication -->
     <authentication-manager alias="authenticationManager">
-        <authentication-provider ref="authenticationProvider"/>
+        <!-- List of available providers -->
+        <authentication-provider ref="preAuthAuthenticationProvider"/>
     </authentication-manager>
 
     <!-- This defines the filter that kicks off the pre-auth "Authentication" process -->
     <beans:bean id="preAuthFilter"
         class="org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter">
         <beans:property name="authenticationManager" ref="authenticationManager"/>
-        <beans:property name="authenticationDetailsSource"
-            ref="j2eeBasedPreAuthenticatedWebAuthenticationDetailsSource"/>
+        <beans:property name="authenticationDetailsSource" ref="authDetailsSource"/>
     </beans:bean>
 
 </beans:beans>
