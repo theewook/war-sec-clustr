@@ -29,4 +29,5 @@
         <cookie-name>spring-sec-session</cookie-name>
         <cookie-path>spring-sec</cookie-path>
     </session-descriptor>
+
 </weblogic-web-app>

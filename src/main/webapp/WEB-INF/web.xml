@@ -16,6 +16,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!-- Provide URL mapping to invoke logout / session invalidate -->
     <servlet>
         <servlet-name>Logout</servlet-name>
         <servlet-class>uk.co.b2esoftware.LogoutServlet</servlet-class>
