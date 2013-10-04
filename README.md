@@ -4,18 +4,22 @@ war-sec
 This is a sample WAR which uses Spring Security for role-based access control, but uses the JEE container to perform
 J2EE "FORM-based" login authentication.
 
-To run under Jetty:
+###Running in Jetty###
 
     mvn jetty:run
 
 Jetty is configured through the maven plugin in the `pom.xml` file and defines a security realm using the file
 `realm.properties`.
 
-To run under WebLogic:
+###Running in WebLogic###
 
 The build includes a shim descriptor `weblogic.xml` for deployment into WebLogic.  The principal names `ROLE_USER`
 and `ROLE_ADMIN` in `weblogic.xml` need to be defined in the WebLogic security realm and associated with appropriate
 users.
+
+###Running in GlassFish###
+
+Similar to WebLogic, but the shim file is glassfish-web.xml
 
 In putting this sample together, I referred to the Spring and Spring Security docs, and also
 [this](https://github.com/skrall/spring-security-j2ee-preauth-example) handy example I found from
@@ -25,15 +29,17 @@ Rationale
 ---------
 
 The purpose of this sample is to show the use of Spring Security in a JEE web app that uses the servlet container to
-perform authentication.  Spring Security calls this pre-authentication.
+perform authentication.  Spring Security refers to this scenario as *pre-authentication* and includes some stuff to
+support it.
 
-This is a common customer use case.  Many customers have operational departments that deploy
-and monitor supplier software in application server consoles like those of WebLogic and WebSphere (no, really!).  Their
-expectation is that they should be able to set up users and groups/roles in the app server in the same way that they
-have for all their other apps - the app server's *security realm* is probably hooked into a shared instance of an LDAP server
-or Active Directory, or whatever, that is shared across the organisation.
+Although SpringSecurity can just as easily be used to perform authentication itself in a number of ways, many
+customers have operational departments that deploy and monitor supplier software in application server consoles like
+those of WebLogic and WebSphere (no, really!).  And their expectation is that they should be able to set up users and
+groups/roles in the app server in the same way that they have for all their other apps - the app server's
+*security realm* is likely hooked into a shared instance of an LDAP server or Active Directory, or whatever, that
+is shared across the organisation.
 
-It's been around for ages; J2EE (or should we by now really be saying JEE?) FORM login.  It allows the container to
+It's been around for ages; J2EE FORM login (or should we by now really be saying JEE?).  It allows the container to
 intercept and authenticate the user's credentials, using the app-supplied login form.  This is achieved with the
 following familiar blocks in the `web.xml` file.
 
