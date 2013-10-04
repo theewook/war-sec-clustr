@@ -21,12 +21,6 @@ users.
 
 Similar to WebLogic, but the shim file is glassfish-web.xml
 
-###Citation###
-
-In putting this sample together, I referred to the Spring and Spring Security docs, and also
-[this](https://github.com/skrall/spring-security-j2ee-preauth-example) handy example I found from
-Steve Krall on github.
-
 Rationale
 ---------
 
@@ -340,7 +334,10 @@ redirected back to the login page by whatever route the server sees fit.  The co
 no use to us.
 
 
+###Citation###
 
+In putting this sample together, I referred to the Spring and Spring Security docs and samples of course, and also
+[this](https://github.com/skrall/spring-security-j2ee-preauth-example) handy example I found from Steve Krall on github.
 
 
 
