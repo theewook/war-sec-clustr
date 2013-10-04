@@ -1,0 +1,39 @@
+<!-- WebLogic shim.  Tested with WebLogic 11g (v 10.3.6) -->
+<weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.oracle.com/weblogic/weblogic-web-app
+    http://xmlns.oracle.com/weblogic/weblogic-web-app/1.3/weblogic-web-app.xsd"
+    >
+    <description>Spring Security Sample</description>
+    <weblogic-version>10.3.6</weblogic-version>
+    <!-- Force policy of WAR class-loader first -->
+    <container-descriptor>
+        <prefer-web-inf-classes>true</prefer-web-inf-classes>
+    </container-descriptor>
+
+    <!-- Map web.xml roles (role-name) to WebLogic roles/groups (principal-name)-->
+    <security-role-assignment>
+        <role-name>ROLE_USER</role-name>
+        <principal-name>ROLE_USER</principal-name>
+    </security-role-assignment>
+    <security-role-assignment>
+        <role-name>ROLE_ADMIN</role-name>
+        <principal-name>ROLE_ADMIN</principal-name>
+    </security-role-assignment>
+
+    <!-- Make WebLogic use a different session ID cookie name and path for this web application -->
+    <!-- Note, if this isn't done, bear in mind that the WebLogic console AND your app both use JSESSIONID by default -->
+    <!-- This causes confusion if debugging your app in a tab of the same browser as the WebLogic console -->
+    <!-- You apparently will be unable to log into your app because the cookie from the console is sent as well -->
+    <session-descriptor>
+        <!-- Choose a different cookie name to avoid clashes -->
+        <cookie-name>SPRINGSECSESSIONID</cookie-name>
+        <!-- Cookie path is the context path of the app -->
+        <cookie-path>/spring-sec</cookie-path>
+        <!-- Restrict access to session cookie, to limit danger of cookie theft (true by default) -->
+        <cookie-http-only>true</cookie-http-only>
+        <!-- Disable session ID url rewriting -->
+        <url-rewriting-enabled>false</url-rewriting-enabled>
+    </session-descriptor>
+
+</weblogic-web-app>
