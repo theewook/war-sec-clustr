@@ -21,6 +21,8 @@ users.
 
 Similar to WebLogic, but the shim file is glassfish-web.xml
 
+###Citation###
+
 In putting this sample together, I referred to the Spring and Spring Security docs, and also
 [this](https://github.com/skrall/spring-security-j2ee-preauth-example) handy example I found from
 Steve Krall on github.
