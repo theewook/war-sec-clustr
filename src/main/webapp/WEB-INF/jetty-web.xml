@@ -9,7 +9,9 @@
             <Set name="sessionPath">/spring-sec</Set>
             <!-- Disable session ID url rewriting -->
             <Set name="sessionURL">none</Set>
+            <!-- Require TLS for cookie use -->
             <!--<Set name="secureCookies" type="boolean">true</Set>-->
+            <!-- Restrict access to session cookie, to limit danger of cookie theft -->
             <Set name="httpOnly" type="boolean">true</Set>
         </Get>
     </Get>
