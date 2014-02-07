@@ -87,6 +87,11 @@
             <artifactId>spring-security-config</artifactId>
             <version>3.1.4.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.9</version>
+        </dependency>
         <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
@@ -105,6 +110,11 @@
             <artifactId>jsp-api</artifactId>
             <version>2.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
         </dependency>
     </dependencies>
     <build>

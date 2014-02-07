@@ -16,14 +16,17 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- Provide URL mapping to invoke logout / session invalidate -->
     <servlet>
-        <servlet-name>Logout</servlet-name>
-        <servlet-class>uk.co.b2esoftware.LogoutServlet</servlet-class>
+        <servlet-name>springMVC</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
+
     <servlet-mapping>
-        <servlet-name>Logout</servlet-name>
-        <url-pattern>/logout</url-pattern>
+        <servlet-name>springMVC</servlet-name>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <!--Loads default Spring config file from WEB-INF/applicationContext.xml-->
@@ -32,28 +35,46 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
     </listener>
 
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>/</welcome-file>
     </welcome-file-list>
 
-    <!-- We activate the container's web.xml based security by securing everything -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Everything</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <!-- Everyone needs at least this role -->
-            <role-name>ROLE_USER</role-name>
-        </auth-constraint>
-    </security-constraint>
+    <!--<security-constraint>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>Resources</web-resource-name>-->
+            <!--<url-pattern>/dsfsdd/*</url-pattern>-->
+        <!--</web-resource-collection>-->
+        <!--<auth-constraint>-->
+            <!--&lt;!&ndash; Everyone needs at least this role &ndash;&gt;-->
+            <!--<role-name>ROLE_USER</role-name>-->
+        <!--</auth-constraint>-->
+    <!--</security-constraint>-->
+
+    <!---->
+    <!--<security-constraint>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>Resources</web-resource-name>-->
+            <!--<url-pattern>/resources/*</url-pattern>-->
+        <!--</web-resource-collection>-->
+    <!--</security-constraint>-->
+
+    <!--<security-constraint>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>Everything</web-resource-name>-->
+            <!--<url-pattern>/*</url-pattern>-->
+        <!--</web-resource-collection>-->
+        <!--<auth-constraint>-->
+            <!--&lt;!&ndash; Everyone needs at least this role &ndash;&gt;-->
+            <!--<role-name>ROLE_USER</role-name>-->
+        <!--</auth-constraint>-->
+    <!--</security-constraint>-->
 
     <login-config>
         <auth-method>FORM</auth-method>
         <!-- For FORM login, most app servers don't use realm-name -->
         <!-- When realm-name is not set here, Jetty's config must use a realm called 'default' -->
         <form-login-config>
-            <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/login_error.jsp</form-error-page>
+            <form-login-page>/login</form-login-page>
+            <form-error-page>/loginfailed</form-error-page>
         </form-login-config>
     </login-config>
 
