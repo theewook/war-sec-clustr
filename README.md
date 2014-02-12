@@ -29,7 +29,9 @@ By default, the application uses this configuration
     # Scheduler configuration
     cleanSession.fixedDelay=10000
 
-These values can be changed in the file `app.properties`
+These values can be changed in the file `app.properties`.
+
+The default timeout for the session is 1 minute.
 
 Running the application
 -----------------------
