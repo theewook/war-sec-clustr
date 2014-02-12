@@ -21,7 +21,7 @@ import java.io.IOException;
 public class RestAuthenticatedProcessingFilter extends GenericFilterBean
 {
     @Autowired
-    private TokenService tokenManagement;
+    private TokenService tokenService;
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -40,14 +40,14 @@ public class RestAuthenticatedProcessingFilter extends GenericFilterBean
 
     public void doAuthentication(String token, HttpServletRequest request, HttpServletResponse response)
     {
-        if (tokenManagement.authorizeToken(token))
+        if (tokenService.authorizeToken(token))
         {
-            SecurityContextHolder.getContext().setAuthentication(tokenManagement.getAuthenticationToken(token));
-            logger.info(token + " +++ " + tokenManagement.getAuthenticationToken(token));
+            SecurityContextHolder.getContext().setAuthentication(tokenService.getAuthenticationToken(token));
+            logger.info(token + " +++ " + tokenService.getAuthenticationToken(token));
         }
         else
         {
-            tokenManagement.invalidateToken(token);
+            tokenService.invalidateToken(token);
             Utils.deleteCookie(request, response, Constants.TOKEN_NAME);
 
             SecurityContextHolder.clearContext();
