@@ -1,6 +1,7 @@
 package uk.co.b2esoftware;
 
-import org.springframework.security.core.Authentication;
+import uk.co.b2esoftware.entity.Token;
+import uk.co.b2esoftware.service.TokenService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import java.util.Map;
  */
 public class Utils
 {
-    public static TokenDetails generateToken(final boolean external, Authentication authentication)
+    public static Token generateToken(final boolean external)
     {
         SecureRandom random = new SecureRandom();
         String token = new BigInteger(100, random).toString(32);
@@ -24,7 +25,7 @@ public class Utils
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 1);
 
-        TokenDetails tokenDetails = new TokenDetails(token, external, cal.getTime().getTime(), authentication);
+        Token tokenDetails = new Token(token, external, external ? cal.getTime() : null, null);
 
         return tokenDetails;
     }
@@ -33,7 +34,7 @@ public class Utils
     {
         Cookie tokenCookie = new Cookie(cookieName, tokenValue);
         tokenCookie.setPath("/" + Constants.CONTEXT_NAME);
-        tokenCookie.setMaxAge((int) TokenManagement.TIMEOUT);
+        tokenCookie.setMaxAge((int) TokenService.TIMEOUT);
         httpResponse.addCookie(tokenCookie);
     }
 

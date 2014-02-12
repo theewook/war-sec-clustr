@@ -1,84 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/security"
-             xmlns:beans="http://www.springframework.org/schema/beans"
+<beans xmlns="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:task="http://www.springframework.org/schema/task"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/task
+           http://www.springframework.org/schema/task/spring-task-3.0.xsd
            http://www.springframework.org/schema/context
-	       http://www.springframework.org/schema/context/spring-context.xsd
-           http://www.springframework.org/schema/security
-           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+	       http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="uk.co.b2esoftware" />
+    <context:component-scan base-package="uk.co.b2esoftware.service" />
+    <context:component-scan base-package="uk.co.b2esoftware.dao" />
+    <context:component-scan base-package="uk.co.b2esoftware.scheduler" />
+    <task:annotation-driven/>
 
-    <http pattern="/resources/**" security="none"/>
+    <import resource="spring-security.xml" />
+    <import resource="hibernate.xml" />
 
-    <http pattern="/rest/**" create-session="stateless" use-expressions="false" auto-config="false"
-        entry-point-ref="authenticationEntryPoint" disable-url-rewriting="true">
-        <intercept-url pattern="/rest/adminservice" access="ROLE_ADMIN" />
-        <intercept-url pattern="/**" access="ROLE_USER" />
-
-        <custom-filter position="PRE_AUTH_FILTER" ref="customJ2eePreAuthenticatedProcessingFilter"/>
-    </http>
-
-    <http create-session="stateless" use-expressions="false" auto-config="false"
-          disable-url-rewriting="true">
-        <intercept-url pattern="/login*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <intercept-url pattern="/**" access="ROLE_USER" />
-
-        <custom-filter position="PRE_AUTH_FILTER" ref="customJ2eePreAuthenticatedProcessingFilter"/>
-
-        <form-login login-page="/login" default-target-url="/" authentication-failure-url="/loginfailed" />
-        <logout logout-success-url="/logout" />
-    </http>
-
-    <!-- In the Pre-auth case, this isn't really the entry point - the container handles that. -->
-    <!-- However, it may be invoked if some SpringSecurity filter, deeper down, throws an un-authorised exception  -->
-    <beans:bean id="authenticationEntryPoint"
-        class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
-
-    <beans:bean id="loginUrlAuthenticationEntryPoint"
-                class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-        <beans:property name="loginFormUrl" value="/login" />
-    </beans:bean>
-
-    <!-- Pulls the roles out of web.xml -->
-    <beans:bean id="webXmlRolesParser"
-        class="org.springframework.security.web.authentication.preauth.j2ee.WebXmlMappableAttributesRetriever"/>
-
-    <!-- Maps the web.xml roles into Spring Security's GrantedAuthorities -->
-    <beans:bean id="roles2GrantedAuthoritiesMapper"
-        class="org.springframework.security.core.authority.mapping.SimpleAttributes2GrantedAuthoritiesMapper">
-        <beans:property name="attributePrefix" value=""/>
-    </beans:bean>
-
-    <!-- Creates the authentication details object (which includes the GrantedAuthorities) -->
-    <beans:bean id="authDetailsSource"
-        class="org.springframework.security.web.authentication.preauth.j2ee.J2eeBasedPreAuthenticatedWebAuthenticationDetailsSource">
-        <beans:property name="mappableRolesRetriever" ref="webXmlRolesParser"/>
-        <beans:property name="userRoles2GrantedAuthoritiesMapper" ref="roles2GrantedAuthoritiesMapper"/>
-    </beans:bean>
-
-    <!-- Builds a UserDetails object from the authenticated Principal and GrantedAuthorities -->
-    <beans:bean id="userDetailsService" class="uk.co.b2esoftware.PreAuthUserDetailsService"/>
-
-    <!-- Calls the UserDetails service and performs minimal checks, before creating a valid Authentication -->
-    <beans:bean id="preAuthAuthenticationProvider"
-        class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
-        <beans:property name="preAuthenticatedUserDetailsService" ref="userDetailsService"/>
-    </beans:bean>
-
-    <!-- The AuthenticationManager checks if any of its Providers can return a fully populated Authentication -->
-    <authentication-manager alias="authenticationManager">
-        <!-- List of available providers -->
-        <authentication-provider ref="preAuthAuthenticationProvider"/>
-    </authentication-manager>
-
-    <beans:bean id="customJ2eePreAuthenticatedProcessingFilter"
-                class="uk.co.b2esoftware.CustomJ2eePreAuthenticatedProcessingFilter">
-        <beans:property name="authenticationManager" ref="authenticationManager"/>
-        <beans:property name="authenticationDetailsSource" ref="authDetailsSource"/>
-    </beans:bean>
-
-</beans:beans>
+</beans>

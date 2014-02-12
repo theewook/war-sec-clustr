@@ -30,11 +30,34 @@
 
 <body>
 
+
+<nav role="navigation" class="navbar navbar-default">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a href="#" class="navbar-brand">Token Auth POC</a>
+    </div>
+    <!-- Collection of nav links and other content for toggling -->
+    <div id="navbarCollapse" class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li><a href="/<%= Constants.CONTEXT_NAME %>/">Home</a></li>
+            <li class="active"><a href="/<%= Constants.CONTEXT_NAME %>/token/list">Token Management</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/<%= Constants.CONTEXT_NAME %>/logout"> Logout</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Signed in as ${username}</a></li>
+        </ul>
+    </div>
+</nav>
+
 <div class="container">
-    <h2>Token Management</h2>
-    <a href="/<%= Constants.CONTEXT_NAME %>/">Index</a> |
-    <a href="/<%= Constants.CONTEXT_NAME %>/logout"> Logout</a>
-    <hr/>
 
     <div class="row custyle">
         <table class="table table-bordered table-hover custab">
@@ -53,7 +76,7 @@
                     <td><c:out value="${token.token}"/></td>
                     <td>
                         <c:forEach items="${token.roles}" var="role">
-                            <c:out value="${role.authority}"/><br/>
+                            <c:out value="${role.role}"/><br/>
                         </c:forEach>
                     </td>
                     <td><c:out value="${token.expiryDateFormatted}"/></td>

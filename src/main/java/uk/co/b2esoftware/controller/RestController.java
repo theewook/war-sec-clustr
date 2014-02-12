@@ -17,7 +17,7 @@ public class RestController
     @RequestMapping(value = "/userservice", method = RequestMethod.GET)
     public ResponseEntity<String> userService()
     {
-        String typeService = "userservice";
+        String typeService = "userservice - OK";
 
         HttpHeaders responseHeaders = new HttpHeaders();
         return new ResponseEntity<String>(typeService, responseHeaders, HttpStatus.OK);
@@ -26,7 +26,7 @@ public class RestController
     @RequestMapping(value = "/adminservice", method = RequestMethod.GET)
     public ResponseEntity<String> adminService()
     {
-        String typeService = "adminservice";
+        String typeService = "adminservice - OK";
 
         HttpHeaders responseHeaders = new HttpHeaders();
         return new ResponseEntity<String>(typeService, responseHeaders, HttpStatus.OK);

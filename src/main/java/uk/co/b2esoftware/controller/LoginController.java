@@ -7,8 +7,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import uk.co.b2esoftware.Constants;
-import uk.co.b2esoftware.TokenManagement;
 import uk.co.b2esoftware.Utils;
+import uk.co.b2esoftware.service.TokenService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,10 +21,10 @@ import java.security.Principal;
 public class LoginController
 {
     @Autowired
-    TokenManagement tokenManagement;
+    private TokenService tokenService;
 
     @RequestMapping(value="/", method = RequestMethod.GET)
-    public String welcome(ModelMap model, Principal principal )
+    public String welcome(ModelMap model, Principal principal)
     {
         String name = principal.getName();
         model.addAttribute("username", name);
@@ -37,7 +37,7 @@ public class LoginController
         return "login";
     }
 
-    @RequestMapping(value="/loginfailed", method = RequestMethod.GET)
+    @RequestMapping(value="/loginfailed", method = {RequestMethod.POST, RequestMethod.GET})
     public String loginfailed(ModelMap model)
     {
         model.addAttribute("error", true);
@@ -47,10 +47,10 @@ public class LoginController
     @RequestMapping(value="/logout", method = RequestMethod.GET)
     public String logout(ModelMap model, HttpServletRequest request, HttpServletResponse httpResponse)
     {
-        String token = Utils.getTokenFromCookie(request.getCookies(), Constants.COOKIE_TOKEN_NAME);
+        String token = Utils.getTokenFromCookie(request.getCookies(), Constants.TOKEN_NAME);
 
-        tokenManagement.invalidateToken(token);
-        Utils.deleteCookie(request, httpResponse, Constants.COOKIE_TOKEN_NAME);
+        tokenService.invalidateToken(token);
+        Utils.deleteCookie(request, httpResponse, Constants.TOKEN_NAME);
 
         SecurityContextHolder.clearContext();
         request.getSession().invalidate();

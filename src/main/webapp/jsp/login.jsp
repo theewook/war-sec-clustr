@@ -16,26 +16,35 @@
 <body>
 
 <div class="container">
-
+    <c:choose>
+        <c:when test="${error}">
+            <div class="bs-example">
+                <div class="alert alert-danger">
+                    <strong>Error!</strong> Wrong username/password combination. Please try again.
+                </div>
+            </div>
+        </c:when>
+    </c:choose>
     <div class="row">
-        <div class="span4 offset4 well">
-            <legend>Please Sign In</legend>
-
-            <c:choose>
-                <c:when test="${error}">
-                    <div class="bs-example">
-                        <div class="alert alert-danger">
-                            <strong>Error!</strong> Wrong username/password combination. Please try again.
-                        </div>
-                    </div>
-                </c:when>
-            </c:choose>
-
-            <form class="form-signin" role="form" name='f' action='j_security_check' method="POST">
-                <input type="text" id="j_username" name="j_username" class="form-control" placeholder="Username" required autofocus>
-                <input type="password" id="j_password" name="j_password" class="form-control" placeholder="Password" required>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-            </form>
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please sign in</h3>
+                </div>
+                <div class="panel-body">
+                    <form accept-charset="UTF-8" role="form" name='f' action='j_security_check' method="POST">
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="j_username" class="form-control" placeholder="Username" required autofocus>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="password" name="j_password" class="form-control" placeholder="Password" required>
+                            </div>
+                            <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

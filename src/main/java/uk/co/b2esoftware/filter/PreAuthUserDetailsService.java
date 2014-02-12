@@ -1,4 +1,4 @@
-package uk.co.b2esoftware;
+package uk.co.b2esoftware.filter;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;

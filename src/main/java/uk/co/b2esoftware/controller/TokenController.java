@@ -6,10 +6,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import uk.co.b2esoftware.TokenDetails;
-import uk.co.b2esoftware.TokenManagement;
+import uk.co.b2esoftware.entity.Token;
+import uk.co.b2esoftware.service.TokenService;
 import uk.co.b2esoftware.vo.TokenVO;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,48 +22,38 @@ import java.util.List;
 public class TokenController
 {
     @Autowired
-    private TokenManagement tokenManagement;
+    private TokenService tokenService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String getTokens(ModelMap model)
-    {
-        List<TokenVO> listTokenVO = listTokenVO(tokenManagement.listExternalToken());
-        model.addAttribute("tokens", listTokenVO);
-        return "token";
-    }
-
-    @RequestMapping(value = "/generate/{roles}", method = RequestMethod.GET)
-    public String generateToken(ModelMap model, @PathVariable String roles)
-    {
-        tokenManagement.generateToken(roles);
-
-        List<TokenVO> listTokenVO = listTokenVO(tokenManagement.listExternalToken());
-        model.addAttribute("tokens", listTokenVO);
-
-        return "token";
-    }
-
-    @RequestMapping(value = "/delete/{token}", method = RequestMethod.GET)
-    public String deleteToken(ModelMap model, @PathVariable String token)
-    {
-        tokenManagement.invalidateToken(token);
-
-        List<TokenVO> listTokenVO = listTokenVO(tokenManagement.listExternalToken());
-        model.addAttribute("tokens", listTokenVO);
-
-        return "token";
-    }
-
-    private List<TokenVO> listTokenVO(List<TokenDetails> listTokenDetails)
+    public String getTokens(ModelMap model, Principal principal)
     {
         List<TokenVO> listTokenVO = new ArrayList<TokenVO>();
 
-        for (TokenDetails tokenDetails : listTokenDetails)
+        for (Token tokenDetails : tokenService.listExternalToken())
         {
             TokenVO tokenVO = new TokenVO(tokenDetails);
             listTokenVO.add(tokenVO);
         }
 
-        return listTokenVO;
+        model.addAttribute("tokens", listTokenVO);
+
+        String name = principal.getName();
+        model.addAttribute("username", name);
+
+        return "token";
+    }
+
+    @RequestMapping(value = "/generate/{roles}", method = RequestMethod.GET)
+    public String generateToken(ModelMap model, Principal principal, @PathVariable String roles)
+    {
+        tokenService.generateToken(roles);
+        return "redirect:/token/list";
+    }
+
+    @RequestMapping(value = "/delete/{token}", method = RequestMethod.GET)
+    public String deleteToken(ModelMap model, Principal principal, @PathVariable String token)
+    {
+        tokenService.invalidateToken(token);
+        return "redirect:/token/list";
     }
 }

@@ -16,13 +16,9 @@ GlassFish Application Server 3.1 Servlet 3.0//EN"
     </security-role-mapping>
 
     <session-config>
-        <cookie-properties>
-            <!-- Choose a different cookie name to avoid clashes -->
-            <property name="cookieName" value="SPRINGSECSESSIONID"/>
-            <!-- Cookie path (session path) is the context path of the app -->
-            <property name="cookiePath" value="/spring-sec"/>
-            <!-- Restrict access to session cookie, to limit danger of cookie theft -->
-            <property name="cookieHttpOnly" value="true"/>
-        </cookie-properties>
+        <session-properties>
+            <property name="enableCookies" value="false" />
+        </session-properties>
     </session-config>
+
 </glassfish-web-app>

@@ -1,11 +1,12 @@
 package uk.co.b2esoftware.vo;
 
-import org.springframework.security.core.GrantedAuthority;
-import uk.co.b2esoftware.TokenDetails;
+import uk.co.b2esoftware.entity.Role;
+import uk.co.b2esoftware.entity.Token;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by TheEwook on 06/02/2014.
@@ -13,27 +14,20 @@ import java.util.Collection;
 public class TokenVO
 {
     private final String token;
-    private final Collection<? extends GrantedAuthority> roles;
-    private final long expiryDate;
+    private final List<Role> roles;
+    private final Date expiryDate;
 
-    public TokenVO(TokenDetails tokenDetails)
+    public TokenVO(Token tokenDetails)
     {
         this.token = tokenDetails.getToken();
-        this.roles = tokenDetails.getAuthentication().getAuthorities();
+        this.roles = tokenDetails.getRoles();
         this.expiryDate = tokenDetails.getExpiryDate();
     }
 
     public String getExpiryDateFormatted()
     {
-        if (expiryDate != -1)
-        {
-            DateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
-            return sdf.format(expiryDate);
-        }
-        else
-        {
-            return "Infinite";
-        }
+        DateFormat sdf = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
+        return sdf.format(expiryDate);
     }
 
     public String getToken()
@@ -41,12 +35,12 @@ public class TokenVO
         return token;
     }
 
-    public Collection<? extends GrantedAuthority> getRoles()
+    public List<Role> getRoles()
     {
         return roles;
     }
 
-    public long getExpiryDate()
+    public Date getExpiryDate()
     {
         return expiryDate;
     }
