@@ -49,9 +49,9 @@ The build includes a shim descriptor `weblogic.xml` for deployment into WebLogic
 and `ROLE_ADMIN` in `weblogic.xml` need to be defined in the WebLogic security realm and associated with appropriate
 users.
 
-**Caution:** the application doesn't work out-of-the box on Weblogic 11g. Weblogic 11g is JAVA EE 5 certified.
-However JPA 2 is not part of the JAVA EE 5. So since WebLogic Server implements the Java EE 5 specification,
-it is not required to support JPA 2. Workaround are possible but they haven't been tested.
+**Caution:** the application doesn't work out-of-the box on Weblogic 11g because of the use of JPA 2. Weblogic 11g
+is JAVA EE 5 certified. However JPA 2 is not part of the JAVA EE 5. So since WebLogic Server implements the Java EE 5
+specification, it is not required to support JPA 2. Workaround are possible but they haven't been tested.
 
 ###Running in GlassFish###
 
