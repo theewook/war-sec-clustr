@@ -19,7 +19,7 @@ VALUES ('CleanSession',0);
 -- Table structure for table `ROLE`
 --
 
-CREATE TABLE `APP_LOCK` (
+CREATE TABLE `APP_ROLE` (
   `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `TOKEN` varchar(100) NOT NULL DEFAULT '',
   `ROLE` varchar(50) NOT NULL DEFAULT '',
@@ -30,7 +30,7 @@ CREATE TABLE `APP_LOCK` (
 -- Table structure for table `TOKEN`
 --
 
-CREATE TABLE `APP_LOCK` (
+CREATE TABLE `APP_TOKEN` (
   `TOKEN` varchar(100) NOT NULL DEFAULT '',
   `USERNAME` varchar(50) NOT NULL DEFAULT '',
   `EXTERNAL` int(1) NOT NULL DEFAULT '0',
